@@ -1,0 +1,50 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: sat-sa-free-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: satsa_db
+      POSTGRES_USER: satsa_user
+      POSTGRES_PASSWORD: satsa_password
+    volumes:
+      - sat_sa_postgres_2:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U satsa_user -d satsa_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - sat-sa-net-2
+
+  backend:
+    image: sat-sa-backend-2:latest
+    container_name: sat-sa-free-backend
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql+psycopg2://satsa_user:satsa_password@db:5432/satsa_db
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8001:8000"
+    networks:
+      - sat-sa-net-2
+
+  frontend:
+    image: sat-sa-frontend-2:latest
+    container_name: sat-sa-free-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "3010:80"
+    networks:
+      - sat-sa-net-2
+
+volumes:
+  sat_sa_postgres_2:
+
+networks:
+  sat-sa-net-2:
+    driver: bridge

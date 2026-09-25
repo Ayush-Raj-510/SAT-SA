@@ -1,0 +1,6 @@
+{
+  "name": "SAT-SA: Supervisory Analytics Tool for SOC Assessment",
+  "description": "Offline, evidence-first supervisory analytics platform for examining periodic SOC submissions from Critical Sector Entities (CSEs), detecting execution gaps and negative space (SIH 26157 - NTRO / NCIIPC).",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}
